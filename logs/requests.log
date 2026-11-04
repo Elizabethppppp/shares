@@ -73,3 +73,145 @@
   "size": 267,
   "status": 200
 }
+--REQUEST--
+{
+  "headers": {
+    "Accept": [
+      "*/*"
+    ],
+    "User-Agent": [
+      "curl/8.7.1"
+    ]
+  },
+  "method": "GET",
+  "path": "/api/v1/news",
+  "time": "2026-11-04T20:53:12+03:00"
+}
+--RESPONSE--
+{
+  "body": {
+    "nextCursor": "",
+    "list": []
+  },
+  "duration_ms": 6,
+  "headers": {
+    "Content-Type": [
+      "application/json"
+    ]
+  },
+  "method": "GET",
+  "path": "/api/v1/news",
+  "size": 28,
+  "status": 200
+}
+--REQUEST--
+{
+  "headers": {
+    "Accept": [
+      "*/*"
+    ],
+    "User-Agent": [
+      "curl/8.7.1"
+    ]
+  },
+  "method": "GET",
+  "path": "/api/v1/news",
+  "time": "2026-11-04T20:53:25+03:00"
+}
+--RESPONSE--
+{
+  "body": {
+    "nextCursor": "",
+    "list": []
+  },
+  "duration_ms": 0,
+  "headers": {
+    "Content-Type": [
+      "application/json"
+    ]
+  },
+  "method": "GET",
+  "path": "/api/v1/news",
+  "size": 28,
+  "status": 200
+}
+--REQUEST--
+{
+  "headers": {
+    "Accept": [
+      "*/*"
+    ],
+    "User-Agent": [
+      "curl/8.7.1"
+    ]
+  },
+  "method": "GET",
+  "path": "/api/v1/news",
+  "time": "2026-11-04T20:53:43+03:00"
+}
+--RESPONSE--
+{
+  "body": {
+    "code": "500",
+    "internalCode": "INTERNAL_ERROR",
+    "devMessage": "Internal Error",
+    "userMessage": {
+      "lang_ru": "Внутренняя ошибка сервера",
+      "lang_en": "Internal Error"
+    }
+  },
+  "duration_ms": 12,
+  "headers": {
+    "Content-Type": [
+      "application/json"
+    ]
+  },
+  "method": "GET",
+  "path": "/api/v1/news",
+  "size": 180,
+  "status": 500
+}
+--REQUEST--
+{
+  "headers": {
+    "Accept": [
+      "*/*"
+    ],
+    "User-Agent": [
+      "curl/8.7.1"
+    ]
+  },
+  "method": "GET",
+  "path": "/api/v1/news",
+  "time": "2026-11-04T20:57:44+03:00"
+}
+--RESPONSE--
+{
+  "body": {
+    "nextCursor": "",
+    "list": [
+      {
+        "id": 1,
+        "title": "Новое уведомление",
+        "publishedAt": "2026-10-14",
+        "previewImg": "news-previewImg.png"
+      },
+      {
+        "id": 2,
+        "title": "Старое уведомление",
+        "publishedAt": "2026-10-01",
+        "previewImg": "old.png"
+      }
+    ]
+  },
+  "duration_ms": 4,
+  "headers": {
+    "Content-Type": [
+      "application/json"
+    ]
+  },
+  "method": "GET",
+  "path": "/api/v1/news",
+  "size": 247,
+  "status": 200
+}
