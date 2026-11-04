@@ -20,3 +20,8 @@ type NewsListPublic struct {
 	PublishedAt time.Time `json:"publishedAt"`
 	PreviewImg  string    `json:"previewImg"`
 }
+
+type NewsListPublicResponse struct {
+	NextCursor string           `json:"nextCursor"`
+	List       []NewsListPublic `json:"list"`
+}
