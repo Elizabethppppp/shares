@@ -1,4 +1,4 @@
 .idea
-config.yaml
+config/config.yaml
 bin
-/logs
+*.logs

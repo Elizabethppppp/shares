@@ -1,0 +1,75 @@
+--REQUEST--
+{
+  "headers": {
+    "Accept": [
+      "*/*"
+    ],
+    "User-Agent": [
+      "curl/8.7.1"
+    ]
+  },
+  "method": "GET",
+  "path": "/api/v1/news",
+  "time": "2026-11-04T10:15:41+03:00"
+}
+--RESPONSE--
+{
+  "body": {
+    "nextCursor": "",
+    "list": []
+  },
+  "duration_ms": 12,
+  "headers": {
+    "Content-Type": [
+      "application/json"
+    ]
+  },
+  "method": "GET",
+  "path": "/api/v1/news",
+  "size": 28,
+  "status": 200
+}
+--REQUEST--
+{
+  "headers": {
+    "Accept": [
+      "*/*"
+    ],
+    "User-Agent": [
+      "curl/8.7.1"
+    ]
+  },
+  "method": "GET",
+  "path": "/api/v1/news",
+  "time": "2026-11-04T10:16:14+03:00"
+}
+--RESPONSE--
+{
+  "body": {
+    "nextCursor": "",
+    "list": [
+      {
+        "id": 1,
+        "title": "Новое уведомление",
+        "publishedAt": "2026-10-14T00:00:00Z",
+        "previewImg": "news-previewImg.png"
+      },
+      {
+        "id": 2,
+        "title": "Старое уведомление",
+        "publishedAt": "2026-10-01T00:00:00Z",
+        "previewImg": "old.png"
+      }
+    ]
+  },
+  "duration_ms": 0,
+  "headers": {
+    "Content-Type": [
+      "application/json"
+    ]
+  },
+  "method": "GET",
+  "path": "/api/v1/news",
+  "size": 267,
+  "status": 200
+}
