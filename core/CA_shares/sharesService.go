@@ -9,6 +9,7 @@ import (
 type NewsRepository interface {
 	GetAll(ctx context.Context) ([]model.NewsListPublic, error)
 	GetById(ctx context.Context, id int64) (model.NewsDetailPublic, error)
+	GetByIdAdminRole(ctx context.Context, id int64) (model.NewsDetailAdmin, error)
 }
 
 type ReduceService struct {
@@ -35,11 +36,19 @@ func (rs *ReduceService) List(ctx context.Context) (model.NewsListPublicResponse
 	}, nil
 }
 
-func (rs *ReduceService) ListById(ctx context.Context, id int64) (model.NewsDetailPublic, error) {
+func (rs *ReduceService) NotificationById(ctx context.Context, id int64) (model.NewsDetailPublic, error) {
 	items, err := rs.repo.GetById(ctx, id)
 	if err != nil {
 		return model.NewsDetailPublic{}, err
 	}
 
+	return items, nil
+}
+
+func (rs *ReduceService) NotificationByIdAdminRole(ctx context.Context, id int64) (model.NewsDetailAdmin, error) {
+	items, err := rs.repo.GetByIdAdminRole(ctx, id)
+	if err != nil {
+		return model.NewsDetailAdmin{}, err
+	}
 	return items, nil
 }

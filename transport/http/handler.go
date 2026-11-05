@@ -27,7 +27,25 @@ func (t *Transport) GetNewsById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	news,err:=t.rs.ListById(r.Context(), id)
+	news, err := t.rs.NotificationById(r.Context(), id)
+	if err != nil {
+		errorResponse.ErrorResponseJSON(w, err)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	_ = json.NewEncoder(w).Encode(news)
+}
+
+func (t *Transport) NewsByIdAdminRole(w http.ResponseWriter, r *http.Request) {
+	idText := r.PathValue("id")
+	id, err := strconv.ParseInt(idText, 10, 64)
+	if err != nil || id <= 0 {
+		errorResponse.ErrorResponseJSON(w, serviceErrors.ErrInvalidId)
+		return
+	}
+
+	news, err := t.rs.NotificationByIdAdminRole(r.Context(), id)
 	if err != nil {
 		errorResponse.ErrorResponseJSON(w, err)
 		return

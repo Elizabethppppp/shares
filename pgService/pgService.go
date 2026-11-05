@@ -80,3 +80,41 @@ func (pg *PgService) GetById(ctx context.Context, id int64) (model.NewsDetailPub
 	news.PublishedAt = publishedAt.Format("2006-01-02")
 	return news, nil
 }
+
+func (pg *PgService) GetByIdAdminRole(ctx context.Context, id int64) (model.NewsDetailAdmin, error) {
+	const query = `SELECT id,title,content, is_active, published_at, created_at, updated_at, 
+       				COALESCE(preview_img, '') AS preview_img, 
+       				COALESCE(img, '') AS img
+					FROM news 
+					WHERE id = $1;`
+
+	row := pg.db.QueryRowContext(ctx, query, id)
+	var news model.NewsDetailAdmin
+	var publishedAt time.Time
+	var createdAt time.Time
+	var updatedAt sql.NullTime
+	err := row.Scan(
+		&news.Id,
+		&news.Title,
+		&news.Content,
+		&news.IsActive,
+		&publishedAt,
+		&createdAt,
+		&updatedAt,
+		&news.PreviewImg,
+		&news.Img)
+
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return model.NewsDetailAdmin{}, serviceErrors.ErrNotFound
+		}
+		return model.NewsDetailAdmin{}, serviceErrors.ErrInternal
+	}
+	news.PublishedAt = publishedAt.Format("2006-01-02")
+	news.CreatedAt = createdAt
+	if updatedAt.Valid {
+		t := updatedAt.Time
+		news.UpdatedAt = &t
+	}
+	return news, nil
+}

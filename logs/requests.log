@@ -321,3 +321,331 @@
   "size": 174,
   "status": 400
 }
+--REQUEST--
+{
+  "headers": {
+    "Accept": [
+      "*/*"
+    ],
+    "User-Agent": [
+      "curl/8.7.1"
+    ]
+  },
+  "method": "GET",
+  "path": "/api/v1/admin/news/1",
+  "time": "2026-11-05T20:43:25+03:00"
+}
+--RESPONSE--
+{
+  "body": {
+    "code": "500",
+    "internalCode": "INTERNAL_ERROR",
+    "devMessage": "Internal Error",
+    "userMessage": {
+      "lang_ru": "Внутренняя ошибка сервера",
+      "lang_en": "Internal Error"
+    }
+  },
+  "duration_ms": 2,
+  "headers": {
+    "Content-Type": [
+      "application/json"
+    ]
+  },
+  "method": "GET",
+  "path": "/api/v1/admin/news/1",
+  "size": 180,
+  "status": 500
+}
+--REQUEST--
+{
+  "headers": {
+    "Accept": [
+      "*/*"
+    ],
+    "User-Agent": [
+      "curl/8.7.1"
+    ]
+  },
+  "method": "GET",
+  "path": "/api/v1/admin/news/1",
+  "time": "2026-11-05T20:44:20+03:00"
+}
+--RESPONSE--
+{
+  "body": {
+    "code": "500",
+    "internalCode": "INTERNAL_ERROR",
+    "devMessage": "Internal Error",
+    "userMessage": {
+      "lang_ru": "Внутренняя ошибка сервера",
+      "lang_en": "Internal Error"
+    }
+  },
+  "duration_ms": 0,
+  "headers": {
+    "Content-Type": [
+      "application/json"
+    ]
+  },
+  "method": "GET",
+  "path": "/api/v1/admin/news/1",
+  "size": 180,
+  "status": 500
+}
+--REQUEST--
+{
+  "headers": {
+    "Accept": [
+      "*/*"
+    ],
+    "User-Agent": [
+      "curl/8.7.1"
+    ]
+  },
+  "method": "GET",
+  "path": "/api/v1/admin/news/1",
+  "time": "2026-11-05T20:44:25+03:00"
+}
+--RESPONSE--
+{
+  "body": {
+    "code": "500",
+    "internalCode": "INTERNAL_ERROR",
+    "devMessage": "Internal Error",
+    "userMessage": {
+      "lang_ru": "Внутренняя ошибка сервера",
+      "lang_en": "Internal Error"
+    }
+  },
+  "duration_ms": 0,
+  "headers": {
+    "Content-Type": [
+      "application/json"
+    ]
+  },
+  "method": "GET",
+  "path": "/api/v1/admin/news/1",
+  "size": 180,
+  "status": 500
+}
+--REQUEST--
+{
+  "headers": {
+    "Accept": [
+      "*/*"
+    ],
+    "User-Agent": [
+      "curl/8.7.1"
+    ]
+  },
+  "method": "GET",
+  "path": "/api/v1/admin/news/3",
+  "time": "2026-11-05T20:44:45+03:00"
+}
+--RESPONSE--
+{
+  "body": {
+    "code": "500",
+    "internalCode": "INTERNAL_ERROR",
+    "devMessage": "Internal Error",
+    "userMessage": {
+      "lang_ru": "Внутренняя ошибка сервера",
+      "lang_en": "Internal Error"
+    }
+  },
+  "duration_ms": 1,
+  "headers": {
+    "Content-Type": [
+      "application/json"
+    ]
+  },
+  "method": "GET",
+  "path": "/api/v1/admin/news/3",
+  "size": 180,
+  "status": 500
+}
+--REQUEST--
+{
+  "headers": {
+    "Accept": [
+      "*/*"
+    ],
+    "User-Agent": [
+      "curl/8.7.1"
+    ]
+  },
+  "method": "GET",
+  "path": "/api/v1/admin/news/999",
+  "time": "2026-11-05T20:44:55+03:00"
+}
+--RESPONSE--
+{
+  "body": {
+    "code": "404",
+    "internalCode": "",
+    "devMessage": "",
+    "userMessage": {
+      "lang_ru": "Уведомление не найдено.",
+      "lang_en": "Notification not found."
+    }
+  },
+  "duration_ms": 0,
+  "headers": {
+    "Content-Type": [
+      "application/json"
+    ]
+  },
+  "method": "GET",
+  "path": "/api/v1/admin/news/999",
+  "size": 156,
+  "status": 404
+}
+--REQUEST--
+{
+  "headers": {
+    "Accept": [
+      "*/*"
+    ],
+    "User-Agent": [
+      "curl/8.7.1"
+    ]
+  },
+  "method": "GET",
+  "path": "/api/v1/admin/news/3",
+  "time": "2026-11-05T20:45:54+03:00"
+}
+--RESPONSE--
+{
+  "body": {
+    "code": "500",
+    "internalCode": "INTERNAL_ERROR",
+    "devMessage": "Internal Error",
+    "userMessage": {
+      "lang_ru": "Внутренняя ошибка сервера",
+      "lang_en": "Internal Error"
+    }
+  },
+  "duration_ms": 0,
+  "headers": {
+    "Content-Type": [
+      "application/json"
+    ]
+  },
+  "method": "GET",
+  "path": "/api/v1/admin/news/3",
+  "size": 180,
+  "status": 500
+}
+--REQUEST--
+{
+  "headers": {
+    "Accept": [
+      "*/*"
+    ],
+    "User-Agent": [
+      "curl/8.7.1"
+    ]
+  },
+  "method": "GET",
+  "path": "/api/v1/admin/news/1",
+  "time": "2026-11-05T20:46:01+03:00"
+}
+--RESPONSE--
+{
+  "body": {
+    "code": "500",
+    "internalCode": "INTERNAL_ERROR",
+    "devMessage": "Internal Error",
+    "userMessage": {
+      "lang_ru": "Внутренняя ошибка сервера",
+      "lang_en": "Internal Error"
+    }
+  },
+  "duration_ms": 0,
+  "headers": {
+    "Content-Type": [
+      "application/json"
+    ]
+  },
+  "method": "GET",
+  "path": "/api/v1/admin/news/1",
+  "size": 180,
+  "status": 500
+}
+--REQUEST--
+{
+  "headers": {
+    "Accept": [
+      "*/*"
+    ],
+    "User-Agent": [
+      "curl/8.7.1"
+    ]
+  },
+  "method": "GET",
+  "path": "/api/v1/admin/news/1",
+  "time": "2026-11-05T20:49:05+03:00"
+}
+--RESPONSE--
+{
+  "body": {
+    "id": 1,
+    "title": "Обновлено",
+    "content": "Текст",
+    "isActive": true,
+    "publishedAt": "2026-10-14",
+    "createdAt": "2026-11-04T20:53:39+03:00",
+    "updatedAt": "2026-11-05T20:44:14+03:00",
+    "previewImg": "news-previewImg.png",
+    "img": ""
+  },
+  "duration_ms": 4,
+  "headers": {
+    "Content-Type": [
+      "application/json"
+    ]
+  },
+  "method": "GET",
+  "path": "/api/v1/admin/news/1",
+  "size": 228,
+  "status": 200
+}
+--REQUEST--
+{
+  "headers": {
+    "Accept": [
+      "*/*"
+    ],
+    "User-Agent": [
+      "curl/8.7.1"
+    ]
+  },
+  "method": "GET",
+  "path": "/api/v1/admin/news/3",
+  "time": "2026-11-05T20:49:12+03:00"
+}
+--RESPONSE--
+{
+  "body": {
+    "id": 3,
+    "title": "Черновик",
+    "content": "Текст",
+    "isActive": false,
+    "publishedAt": "2026-10-20",
+    "createdAt": "2026-11-04T20:53:39+03:00",
+    "updatedAt": null,
+    "previewImg": "draft.png",
+    "img": ""
+  },
+  "duration_ms": 1,
+  "headers": {
+    "Content-Type": [
+      "application/json"
+    ]
+  },
+  "method": "GET",
+  "path": "/api/v1/admin/news/3",
+  "size": 194,
+  "status": 200
+}
