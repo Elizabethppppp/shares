@@ -215,3 +215,109 @@
   "size": 247,
   "status": 200
 }
+--REQUEST--
+{
+  "headers": {
+    "Accept": [
+      "*/*"
+    ],
+    "User-Agent": [
+      "curl/8.7.1"
+    ]
+  },
+  "method": "GET",
+  "path": "/api/v1/news/1",
+  "time": "2026-11-05T20:14:34+03:00"
+}
+--RESPONSE--
+{
+  "body": {
+    "id": 1,
+    "title": "Новое уведомление",
+    "content": "Текст",
+    "publishedAt": "2026-10-14",
+    "img": ""
+  },
+  "duration_ms": 3,
+  "headers": {
+    "Content-Type": [
+      "application/json"
+    ]
+  },
+  "method": "GET",
+  "path": "/api/v1/news/1",
+  "size": 112,
+  "status": 200
+}
+--REQUEST--
+{
+  "headers": {
+    "Accept": [
+      "*/*"
+    ],
+    "User-Agent": [
+      "curl/8.7.1"
+    ]
+  },
+  "method": "GET",
+  "path": "/api/v1/news/999",
+  "time": "2026-11-05T20:14:49+03:00"
+}
+--RESPONSE--
+{
+  "body": {
+    "code": "404",
+    "internalCode": "",
+    "devMessage": "",
+    "userMessage": {
+      "lang_ru": "Уведомление не найдено.",
+      "lang_en": "Notification not found."
+    }
+  },
+  "duration_ms": 0,
+  "headers": {
+    "Content-Type": [
+      "application/json"
+    ]
+  },
+  "method": "GET",
+  "path": "/api/v1/news/999",
+  "size": 156,
+  "status": 404
+}
+--REQUEST--
+{
+  "headers": {
+    "Accept": [
+      "*/*"
+    ],
+    "User-Agent": [
+      "curl/8.7.1"
+    ]
+  },
+  "method": "GET",
+  "path": "/api/v1/news/abc",
+  "time": "2026-11-05T20:15:06+03:00"
+}
+--RESPONSE--
+{
+  "body": {
+    "code": "400",
+    "internalCode": "INVALID_ID",
+    "devMessage": "Invalid Id format",
+    "userMessage": {
+      "lang_ru": "Некорректный формат Id",
+      "lang_en": "Invalid Id format"
+    }
+  },
+  "duration_ms": 0,
+  "headers": {
+    "Content-Type": [
+      "application/json"
+    ]
+  },
+  "method": "GET",
+  "path": "/api/v1/news/abc",
+  "size": 174,
+  "status": 400
+}

@@ -65,6 +65,17 @@ var errorResponseMessage = map[error]errorResponse{
 			LangRu: "Внутренняя ошибка сервера",
 			LangEn: "Internal Error",
 		},
+
+	},
+	serviceErrors.ErrInvalidId: {
+		StatusCode:   http.StatusBadRequest,
+		Code:         CodeBadRequest,
+		InternalCode: "INVALID_ID",
+		DevMessage:   "Invalid Id format",
+		UserMessage: UserMessage{
+			LangEn: "Invalid Id format",
+			LangRu: "Некорректный формат Id",
+		},
 	},
 }
 

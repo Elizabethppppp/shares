@@ -18,6 +18,7 @@ func (t *Transport) Handler() *http.ServeMux {
 	mux := http.NewServeMux()
 
 	mux.Handle("GET /api/v1/news", middleware.LoggerMiddleware(http.HandlerFunc(t.ListNews)))
+	mux.Handle("GET /api/v1/news/{id}",middleware.LoggerMiddleware(http.HandlerFunc(t.GetNewsById)))
 
 	return mux
 }

@@ -8,6 +8,7 @@ import (
 
 type NewsRepository interface {
 	GetAll(ctx context.Context) ([]model.NewsListPublic, error)
+	GetById(ctx context.Context, id int64) (model.NewsDetailPublic, error)
 }
 
 type ReduceService struct {
@@ -32,4 +33,13 @@ func (rs *ReduceService) List(ctx context.Context) (model.NewsListPublicResponse
 		NextCursor: "",
 		List:       items,
 	}, nil
+}
+
+func (rs *ReduceService) ListById(ctx context.Context, id int64) (model.NewsDetailPublic, error) {
+	items, err := rs.repo.GetById(ctx, id)
+	if err != nil {
+		return model.NewsDetailPublic{}, err
+	}
+
+	return items, nil
 }
