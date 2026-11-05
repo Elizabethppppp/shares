@@ -111,9 +111,9 @@ func (pg *PgService) GetByIdAdminRole(ctx context.Context, id int64) (model.News
 		return model.NewsDetailAdmin{}, serviceErrors.ErrInternal
 	}
 	news.PublishedAt = publishedAt.Format("2006-01-02")
-	news.CreatedAt = createdAt
+	news.CreatedAt = createdAt.Format("2006-01-02 15:04:05")
 	if updatedAt.Valid {
-		t := updatedAt.Time
+		t := updatedAt.Time.Format("2006-01-02 15:04:05")
 		news.UpdatedAt = &t
 	}
 	return news, nil
