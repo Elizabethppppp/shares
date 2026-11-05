@@ -34,6 +34,16 @@ type NewsDetailPublic struct {
 	Img         string `json:"img"`
 }
 
+type NewsList struct {
+	Id          int64  `json:"id"`
+	Title       string `json:"title"`
+	IsActive    bool   `json:"isActive"`
+	PublishedAt string `json:"publishedAt"`
+	CreatedAt   string `json:"createdAt"`
+	PreviewImg  string `json:"previewImg"`
+	Img         string `json:"img"`
+}
+
 type NewsDetailAdmin struct {
 	Id          int64   `json:"id"`
 	Title       string  `json:"title"`

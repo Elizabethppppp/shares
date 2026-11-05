@@ -81,6 +81,14 @@ func (pg *PgService) GetById(ctx context.Context, id int64) (model.NewsDetailPub
 	return news, nil
 }
 
+func (pg *PgService) GetAllList(ctx context.Context) ([]model.NewsList, error) {
+	const query = `SELECT id,title, is_active, published_at, created_at,
+					COALESCE(preview_img, '') AS preview_img,
+					COALESCE(img, '') AS img
+					FROM news`
+	rows, err := pg.db.QueryContext(ctx, query)
+}
+
 func (pg *PgService) GetByIdAdminRole(ctx context.Context, id int64) (model.NewsDetailAdmin, error) {
 	const query = `SELECT id,title,content, is_active, published_at, created_at, updated_at, 
        				COALESCE(preview_img, '') AS preview_img, 
