@@ -7,4 +7,5 @@ var (
 	ErrNotFound   = errors.New("not found")
 	ErrInternal   = errors.New("internal error")
 	ErrInvalidId  = errors.New("invalid id")
+	ErrForbidden  = errors.New("forbidden")
 )

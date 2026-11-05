@@ -13,6 +13,7 @@ const (
 	CodeBadRequest ErrorCode = "400"
 	CodeNotFound   ErrorCode = "404"
 	CodeInternal   ErrorCode = "500"
+	CodeForbidden  ErrorCode = "403"
 )
 
 type UserMessage struct {
@@ -65,7 +66,6 @@ var errorResponseMessage = map[error]errorResponse{
 			LangRu: "Внутренняя ошибка сервера",
 			LangEn: "Internal Error",
 		},
-
 	},
 	serviceErrors.ErrInvalidId: {
 		StatusCode:   http.StatusBadRequest,
@@ -75,6 +75,16 @@ var errorResponseMessage = map[error]errorResponse{
 		UserMessage: UserMessage{
 			LangEn: "Invalid Id format",
 			LangRu: "Некорректный формат Id",
+		},
+	},
+	serviceErrors.ErrForbidden: {
+		StatusCode:   http.StatusForbidden,
+		Code:         CodeForbidden,
+		InternalCode: "FORBIDDEN",
+		DevMessage:   "Forbidden",
+		UserMessage: UserMessage{
+			LangEn: "Access Denied",
+			LangRu: "Доступ запрещён",
 		},
 	},
 }
