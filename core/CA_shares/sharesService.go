@@ -10,6 +10,7 @@ type NewsRepository interface {
 	GetAll(ctx context.Context) ([]model.NewsListPublic, error)
 	GetById(ctx context.Context, id int64) (model.NewsDetailPublic, error)
 	GetByIdAdminRole(ctx context.Context, id int64) (model.NewsDetailAdmin, error)
+	UpdateActive(ctx context.Context, id int64) (model.NewsUpdateActive, error)
 }
 
 type ReduceService struct {
@@ -51,4 +52,12 @@ func (rs *ReduceService) NotificationByIdAdminRole(ctx context.Context, id int64
 		return model.NewsDetailAdmin{}, err
 	}
 	return items, nil
+}
+
+func (rs *ReduceService) UpdateStatus(ctx context.Context, id int64) (model.NewsUpdateActive, error) {
+	news, err := rs.repo.UpdateActive(ctx, id)
+	if err != nil {
+		return model.NewsUpdateActive{}, err
+	}
+	return news, nil
 }

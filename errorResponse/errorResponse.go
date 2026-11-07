@@ -89,7 +89,7 @@ var errorResponseMessage = map[error]errorResponse{
 	},
 	serviceErrors.ErrPublicationNotReached: {
 		StatusCode:   http.StatusServiceUnavailable,
-		Code:         CodeInternal,
+		Code:         CodeBadRequest,
 		InternalCode: "",
 		DevMessage:   "",
 		UserMessage: UserMessage{
