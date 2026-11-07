@@ -86,7 +86,8 @@ func (pg *PgService) GetAllList(ctx context.Context) ([]model.NewsList, error) {
 					COALESCE(preview_img, '') AS preview_img,
 					COALESCE(img, '') AS img
 					FROM news`
-	rows, err := pg.db.QueryContext(ctx, query)
+	//rows, err := pg.db.QueryContext(ctx, query)
+	return []model.NewsList{}, nil
 }
 
 func (pg *PgService) GetByIdAdminRole(ctx context.Context, id int64) (model.NewsDetailAdmin, error) {
@@ -119,6 +120,56 @@ func (pg *PgService) GetByIdAdminRole(ctx context.Context, id int64) (model.News
 		return model.NewsDetailAdmin{}, serviceErrors.ErrInternal
 	}
 	news.PublishedAt = publishedAt.Format("2006-01-02")
+	news.CreatedAt = createdAt.Format("2006-01-02 15:04:05")
+	if updatedAt.Valid {
+		t := updatedAt.Time.Format("2006-01-02 15:04:05")
+		news.UpdatedAt = &t
+	}
+	return news, nil
+}
+
+func (pg *PgService) UpdateActive(ctx context.Context, id int64) (model.NewsUpdateActive, error) {
+	var publishedAt time.Time
+	err := pg.db.QueryRowContext(ctx,
+		`SELECT published_at FROM news WHERE id = $1`, id).Scan(&publishedAt)
+	if errors.Is(err, sql.ErrNoRows) {
+		return model.NewsUpdateActive{}, serviceErrors.ErrNotFound
+	}
+	if err != nil {
+		return model.NewsUpdateActive{}, serviceErrors.ErrInternal
+	}
+	if publishedAt.After(time.Now()) {
+		return model.NewsUpdateActive{}, serviceErrors.ErrPublicationNotReached
+	}
+
+	const query = `UPDATE news
+        			SET is_active = NOT is_active, updated_at = NOW()
+     			    WHERE id = $1
+        			RETURNING id, title, content, is_active, published_at, created_at, updated_at,
+                 	COALESCE(preview_img, '') AS preview_img,
+                  	COALESCE(img, '') AS img`
+
+	var news model.NewsUpdateActive
+	var pubAt time.Time
+	var createdAt time.Time
+	var updatedAt sql.NullTime
+
+	err = pg.db.QueryRowContext(ctx, query, id).Scan(
+		&news.Id,
+		&news.Title,
+		&news.Content,
+		&news.IsActive,
+		&pubAt,
+		&createdAt,
+		&updatedAt,
+		&news.PreviewImg,
+		&news.Img,
+	)
+	if err != nil {
+		return model.NewsUpdateActive{}, serviceErrors.ErrInternal
+	}
+
+	news.PublishedAt = pubAt.Format("2006-01-02")
 	news.CreatedAt = createdAt.Format("2006-01-02 15:04:05")
 	if updatedAt.Valid {
 		t := updatedAt.Time.Format("2006-01-02 15:04:05")

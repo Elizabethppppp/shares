@@ -55,3 +55,15 @@ type NewsDetailAdmin struct {
 	PreviewImg  string  `json:"previewImg"`
 	Img         string  `json:"img"`
 }
+
+type NewsUpdateActive struct {
+	Id          int64   `json:"id"`
+	Title       string  `json:"title"`
+	Content     string  `json:"content"`
+	IsActive    bool    `json:"isActive"`
+	PublishedAt string  `json:"publishedAt"`
+	CreatedAt   string  `json:"createdAt"`
+	UpdatedAt   *string `json:"updatedAt"`
+	PreviewImg  string  `json:"previewImg"`
+	Img         string  `json:"img"`
+}

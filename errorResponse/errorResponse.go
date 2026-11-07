@@ -87,6 +87,16 @@ var errorResponseMessage = map[error]errorResponse{
 			LangRu: "Доступ запрещён",
 		},
 	},
+	serviceErrors.ErrPublicationNotReached: {
+		StatusCode:   http.StatusServiceUnavailable,
+		Code:         CodeInternal,
+		InternalCode: "",
+		DevMessage:   "",
+		UserMessage: UserMessage{
+			LangRu: "Нельзя активировать уведомление до наступления даты публикации",
+			LangEn: "Cannot activate the notification before its publication date",
+		},
+	},
 }
 
 func ErrorResponseJSON(w http.ResponseWriter, errs error) {
