@@ -11,6 +11,7 @@ type NewsRepository interface {
 	GetById(ctx context.Context, id int64) (model.NewsDetailPublic, error)
 	GetByIdAdminRole(ctx context.Context, id int64) (model.NewsDetailAdmin, error)
 	UpdateActive(ctx context.Context, id int64) (model.NewsUpdateActive, error)
+	Delete(ctx context.Context, id int64) error
 }
 
 type ReduceService struct {
@@ -60,4 +61,8 @@ func (rs *ReduceService) UpdateStatus(ctx context.Context, id int64) (model.News
 		return model.NewsUpdateActive{}, err
 	}
 	return news, nil
+}
+
+func (rs *ReduceService) DeleteNotification(ctx context.Context, id int64) error {
+	return rs.repo.Delete(ctx, id)
 }

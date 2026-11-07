@@ -21,6 +21,7 @@ func (t *Transport) Handler() *http.ServeMux {
 	mux.Handle("GET /api/v1/news/{id}", middleware.LoggerMiddleware(http.HandlerFunc(t.GetNewsById)))
 	mux.Handle("GET /api/v1/admin/news/{id}", middleware.LoggerMiddleware(http.HandlerFunc(t.NewsByIdAdminRole)))
 	mux.Handle("PATCH /api/v1/admin/news/{id}/status", middleware.LoggerMiddleware(http.HandlerFunc(t.NewsUpdateStatus)))
+	mux.Handle("DELETE /api/v1/admin/news/{id}", middleware.LoggerMiddleware(http.HandlerFunc(t.NewsDelete)))
 
 	return mux
 }
