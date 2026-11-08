@@ -2,10 +2,9 @@ package http
 
 import (
 	"CA_shares/errorResponse"
-	"CA_shares/serviceErrors"
+	"CA_shares/validation"
 	"encoding/json"
 	"net/http"
-	"strconv"
 )
 
 func (t *Transport) ListNews(w http.ResponseWriter, r *http.Request) {
@@ -20,10 +19,9 @@ func (t *Transport) ListNews(w http.ResponseWriter, r *http.Request) {
 }
 
 func (t *Transport) GetNewsById(w http.ResponseWriter, r *http.Request) {
-	idText := r.PathValue("id")
-	id, err := strconv.ParseInt(idText, 10, 64)
-	if err != nil || id <= 0 {
-		errorResponse.ErrorResponseJSON(w, serviceErrors.ErrInvalidId)
+	id, err := validation.ParseId(r)
+	if err != nil {
+		errorResponse.ErrorResponseJSON(w, err)
 		return
 	}
 
@@ -38,10 +36,9 @@ func (t *Transport) GetNewsById(w http.ResponseWriter, r *http.Request) {
 }
 
 func (t *Transport) NewsByIdAdminRole(w http.ResponseWriter, r *http.Request) {
-	idText := r.PathValue("id")
-	id, err := strconv.ParseInt(idText, 10, 64)
-	if err != nil || id <= 0 {
-		errorResponse.ErrorResponseJSON(w, serviceErrors.ErrInvalidId)
+	id, err := validation.ParseId(r)
+	if err != nil {
+		errorResponse.ErrorResponseJSON(w, err)
 		return
 	}
 
@@ -56,10 +53,9 @@ func (t *Transport) NewsByIdAdminRole(w http.ResponseWriter, r *http.Request) {
 }
 
 func (t *Transport) NewsUpdateStatus(w http.ResponseWriter, r *http.Request) {
-	idText := r.PathValue("id")
-	id, err := strconv.ParseInt(idText, 10, 64)
-	if err != nil || id <= 0 {
-		errorResponse.ErrorResponseJSON(w, serviceErrors.ErrInvalidId)
+	id, err := validation.ParseId(r)
+	if err != nil {
+		errorResponse.ErrorResponseJSON(w, err)
 		return
 	}
 	news, err := t.rs.UpdateStatus(r.Context(), id)
@@ -73,10 +69,9 @@ func (t *Transport) NewsUpdateStatus(w http.ResponseWriter, r *http.Request) {
 }
 
 func (t *Transport) NewsDelete(w http.ResponseWriter, r *http.Request) {
-	idText := r.PathValue("id")
-	id, err := strconv.ParseInt(idText, 10, 64)
-	if err != nil || id <= 0 {
-		errorResponse.ErrorResponseJSON(w, serviceErrors.ErrInvalidId)
+	id, err := validation.ParseId(r)
+	if err != nil {
+		errorResponse.ErrorResponseJSON(w, err)
 		return
 	}
 	err = t.rs.DeleteNotification(r.Context(), id)
