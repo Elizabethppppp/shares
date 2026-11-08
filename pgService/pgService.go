@@ -244,3 +244,31 @@ func (pg *PgService) Delete(ctx context.Context, id int64) error {
 	}
 	return nil
 }
+
+func (pg *PgService) Create(ctx context.Context, p model.NewsPostNew) (model.NewsList, error) {
+	const query = `INSERT INTO news (title, content, published_at, preview_img, img)
+					VALUES ($1, $2, $3, $4, $5)
+					RETURNING id, title, is_active, published_at, created_at,
+          			COALESCE(preview_img, '') AS preview_img,
+          			COALESCE(img, '') AS img`
+
+	var news model.NewsList
+	var publishedAt time.Time
+	var createdAt time.Time
+
+	err := pg.db.QueryRowContext(ctx, query, p.Title, p.Content, p.PublishedAt, p.PreviewImg, p.Img).Scan(
+		&news.Id,
+		&news.Title,
+		&news.IsActive,
+		&publishedAt,
+		&createdAt,
+		&news.PreviewImg,
+		&news.Img,
+	)
+	if err != nil {
+		return model.NewsList{}, serviceErrors.ErrInternal
+	}
+	news.PublishedAt = publishedAt.Format("2006-01-02")
+	news.CreatedAt = createdAt.Format("2006-01-02 15:04:05")
+	return news, nil
+}

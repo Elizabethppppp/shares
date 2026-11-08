@@ -3,11 +3,13 @@ package http
 import (
 	"CA_shares/errorResponse"
 	"CA_shares/filtres"
+	"CA_shares/model"
 	"CA_shares/serviceErrors"
 	"CA_shares/validation"
 	"encoding/json"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 func (t *Transport) ListNews(w http.ResponseWriter, r *http.Request) {
@@ -168,4 +170,50 @@ func (t *Transport) NewsDelete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.WriteHeader(http.StatusNoContent)
+}
+
+func (t *Transport) CreateNews(w http.ResponseWriter, r *http.Request) {
+	const maxBody = 16 << 20
+	r.Body = http.MaxBytesReader(w, r.Body, maxBody)
+
+	if err := r.ParseMultipartForm(maxBody); err != nil {
+		errorResponse.ErrorResponseJSON(w, serviceErrors.ErrNewsValidationFailed)
+		return
+	}
+
+	title := r.FormValue("title")
+	if title == "" || len([]rune(title)) > 50 {
+		errorResponse.ErrorResponseJSON(w, serviceErrors.ErrNewsValidationFailed)
+		return
+	}
+
+	content := r.FormValue("content")
+	if content == "" || len([]rune(content)) > 1000 {
+		errorResponse.ErrorResponseJSON(w, serviceErrors.ErrNewsValidationFailed)
+		return
+	}
+
+	pubAtStr := r.FormValue("publishedAt")
+	publishedAt, err := time.Parse("02-01-2006", pubAtStr)
+	if err != nil {
+		errorResponse.ErrorResponseJSON(w, serviceErrors.ErrNewsValidationFailed)
+		return
+	}
+
+	input := model.NewsPostNew{
+		Title:       title,
+		Content:     content,
+		PublishedAt: publishedAt,
+		PreviewImg:  "",
+		Img:         "",
+	}
+
+	news, err := t.s.CreateNotification(r.Context(), input)
+	if err != nil {
+		errorResponse.ErrorResponseJSON(w, err)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	_ = json.NewEncoder(w).Encode(news)
 }

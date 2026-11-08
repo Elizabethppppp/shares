@@ -72,3 +72,13 @@ type NewsUpdateActive struct {
 	PreviewImg  string  `json:"previewImg"`
 	Img         string  `json:"img"`
 }
+
+type NewsUpdatePublished struct{}
+
+type NewsPostNew struct {
+	Title       string    `json:"title"`
+	Content     string    `json:"content"`
+	PublishedAt time.Time `json:"publishedAt"`
+	PreviewImg  string    `json:"previewImg"`
+	Img         string    `json:"img"`
+}

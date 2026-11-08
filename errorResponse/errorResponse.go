@@ -97,6 +97,15 @@ var errorResponseMessage = map[error]errorResponse{
 			LangEn: "Cannot activate the notification before its publication date",
 		},
 	},
+	serviceErrors.ErrNewsValidationFailed: {
+		StatusCode: http.StatusBadRequest,
+		Code:       CodeBadRequest,
+		DevMessage: "",
+		UserMessage: UserMessage{
+			LangRu: "Не удалось сохранить уведомление. Проверьте заполнение полей и попробуйте снова",
+			LangEn: "Couldn't save the notification. Please check the fields and try again",
+		},
+	},
 }
 
 func ErrorResponseJSON(w http.ResponseWriter, errs error) {

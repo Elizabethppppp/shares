@@ -14,6 +14,7 @@ type NewsRepository interface {
 	GetByIdAdminRole(ctx context.Context, id int64) (model.NewsDetailAdmin, error)
 	UpdateActive(ctx context.Context, id int64) (model.NewsUpdateActive, error)
 	Delete(ctx context.Context, id int64) error
+	Create(ctx context.Context, p model.NewsPostNew) (model.NewsList, error)
 }
 
 type SharesService struct {
@@ -81,4 +82,8 @@ func (s *SharesService) UpdateStatus(ctx context.Context, id int64) (model.NewsU
 
 func (s *SharesService) DeleteNotification(ctx context.Context, id int64) error {
 	return s.repo.Delete(ctx, id)
+}
+
+func (s *SharesService) CreateNotification(ctx context.Context, p model.NewsPostNew) (model.NewsList, error) {
+	return s.repo.Create(ctx, p)
 }

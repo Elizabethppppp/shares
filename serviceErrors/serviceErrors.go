@@ -9,4 +9,5 @@ var (
 	ErrInvalidId             = errors.New("invalid id")
 	ErrForbidden             = errors.New("forbidden")
 	ErrPublicationNotReached = errors.New("publication not reached")
+	ErrNewsValidationFailed  = errors.New("news validation failed")
 )
