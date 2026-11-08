@@ -40,7 +40,7 @@ func main() {
 	logger.Info("Connection successfully established", "host", cfg.DB.Host, "port", cfg.DB.Port)
 
 	pg := pgService.NewPgService(dbConn)
-	svc := CA_shares.NewReduceService(pg)
+	svc := CA_shares.NewSharesService(pg)
 	tp := transport.NewTransport(svc)
 	handler := tp.Handler()
 

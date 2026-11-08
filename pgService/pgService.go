@@ -1,6 +1,7 @@
 package pgService
 
 import (
+	"CA_shares/filtres"
 	"CA_shares/model"
 	"CA_shares/serviceErrors"
 	"context"
@@ -81,13 +82,63 @@ func (pg *PgService) GetById(ctx context.Context, id int64) (model.NewsDetailPub
 	return news, nil
 }
 
-func (pg *PgService) GetAllList(ctx context.Context) ([]model.NewsList, error) {
-	const query = `SELECT id,title, is_active, published_at, created_at,
-					COALESCE(preview_img, '') AS preview_img,
-					COALESCE(img, '') AS img
-					FROM news`
-	//rows, err := pg.db.QueryContext(ctx, query)
-	return []model.NewsList{}, nil
+func (pg *PgService) GetAllList(ctx context.Context, f filtres.ListFilter) ([]model.NewsList, int64, error) {
+	orderBy := f.SortBy
+	var orderDir string
+	switch f.SortDir {
+	case "asc":
+		orderDir = "ASC"
+	case "desc":
+		orderDir = "DESC"
+	default:
+		orderDir = "DESC"
+	}
+	query := `SELECT id, title, is_active, published_at, created_at,
+               COALESCE(preview_img, '') AS preview_img,
+               COALESCE(img, '') AS img
+     	   	   FROM news
+        	   WHERE ($1::text IS NULL OR title ILIKE '%' || $1 || '%')
+               AND ($2::boolean IS NULL OR is_active = $2)
+               ORDER BY ` + orderBy + ` ` + orderDir + `, id ` + orderDir + `
+               LIMIT $3 OFFSET $4`
+	rows, err := pg.db.QueryContext(ctx, query, f.Title, f.IsActive, f.Limit, f.Offset)
+	if err != nil {
+		return nil, 0, serviceErrors.ErrInternal
+	}
+	defer rows.Close()
+
+	var items []model.NewsList
+	for rows.Next() {
+		var item model.NewsList
+		var publishedAt time.Time
+		var createdAt time.Time
+		err := rows.Scan(
+			&item.Id,
+			&item.Title,
+			&item.IsActive,
+			&publishedAt,
+			&createdAt,
+			&item.PreviewImg,
+			&item.Img)
+		if err != nil {
+			return nil, 0, serviceErrors.ErrInternal
+		}
+		item.PublishedAt = publishedAt.Format("2006-01-02")
+		item.CreatedAt = createdAt.Format("2006-01-02 15:04:05")
+		items = append(items, item)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, 0, serviceErrors.ErrInternal
+	}
+
+	var count int64
+	const countQuery = `SELECT COUNT(*) FROM news
+						WHERE ($1::text IS NULL OR title ILIKE '%' || $1 || '%')
+          				AND ($2::boolean IS NULL OR is_active = $2)`
+	if err := pg.db.QueryRowContext(ctx, countQuery, f.Title, f.IsActive).Scan(&count); err != nil {
+		return nil, 0, serviceErrors.ErrInternal
+	}
+	return items, count, nil
 }
 
 func (pg *PgService) GetByIdAdminRole(ctx context.Context, id int64) (model.NewsDetailAdmin, error) {
