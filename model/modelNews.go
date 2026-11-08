@@ -44,6 +44,11 @@ type NewsList struct {
 	Img         string `json:"img"`
 }
 
+type NewsListResponse struct {
+	TotalCount int64      `json:"totalCount"`
+	List       []NewsList `json:"list"`
+}
+
 type NewsDetailAdmin struct {
 	Id          int64   `json:"id"`
 	Title       string  `json:"title"`
