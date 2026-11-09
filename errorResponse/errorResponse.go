@@ -10,10 +10,11 @@ import (
 type ErrorCode string
 
 const (
-	CodeBadRequest ErrorCode = "400"
-	CodeNotFound   ErrorCode = "404"
-	CodeInternal   ErrorCode = "500"
-	CodeForbidden  ErrorCode = "403"
+	CodeBadRequest   ErrorCode = "400"
+	CodeNotFound     ErrorCode = "404"
+	CodeInternal     ErrorCode = "500"
+	CodeForbidden    ErrorCode = "403"
+	CodeUnauthorized ErrorCode = "401"
 )
 
 type UserMessage struct {
@@ -104,6 +105,15 @@ var errorResponseMessage = map[error]errorResponse{
 		UserMessage: UserMessage{
 			LangRu: "Не удалось сохранить уведомление. Проверьте заполнение полей и попробуйте снова",
 			LangEn: "Couldn't save the notification. Please check the fields and try again",
+		},
+	},
+	serviceErrors.ErrUnauthorized: {
+		StatusCode: http.StatusUnauthorized,
+		Code:       CodeUnauthorized,
+		DevMessage: "",
+		UserMessage: UserMessage{
+			LangRu: "Не авторизован",
+			LangEn: "Unauthorized",
 		},
 	},
 }

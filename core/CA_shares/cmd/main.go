@@ -14,6 +14,8 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
+
+	"github.com/golang-jwt/jwt/v5"
 )
 
 func main() {
@@ -28,6 +30,12 @@ func main() {
 	})
 	logger.Info("Config successfully parsed", "dbHost", cfg.DB.Host, "dbName", cfg.DB.DBName, "dbSchema", cfg.DB.Schema)
 
+	publicKey, err := jwt.ParseRSAPublicKeyFromPEM([]byte(cfg.Auth.PublicKey))
+	if err != nil {
+		logger.Fatal("invalid public key", "error", err.Error())
+	}
+	logger.Info("public key loaded", "bits", publicKey.N.BitLen())
+
 	dbConn, err := db.Connect(cfg.DB)
 	if err != nil {
 		logger.Fatal("Fail connect database", "error", err.Error())
@@ -41,7 +49,7 @@ func main() {
 
 	pg := pgService.NewPgService(dbConn)
 	svc := CA_shares.NewSharesService(pg)
-	tp := transport.NewTransport(svc)
+	tp := transport.NewTransport(svc, publicKey)
 	handler := tp.Handler()
 
 	srv := &http.Server{

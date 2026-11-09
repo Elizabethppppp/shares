@@ -3,15 +3,17 @@ package http
 import (
 	"CA_shares/core/CA_shares"
 	"CA_shares/middleware"
+	"crypto/rsa"
 	"net/http"
 )
 
 type Transport struct {
-	s *CA_shares.SharesService
+	s         *CA_shares.SharesService
+	publicKey *rsa.PublicKey
 }
 
-func NewTransport(s *CA_shares.SharesService) *Transport {
-	return &Transport{s: s}
+func NewTransport(s *CA_shares.SharesService, publicKey *rsa.PublicKey) *Transport {
+	return &Transport{s: s, publicKey: publicKey}
 }
 
 func (t *Transport) Handler() *http.ServeMux {
@@ -19,11 +21,14 @@ func (t *Transport) Handler() *http.ServeMux {
 
 	mux.Handle("GET /api/v1/news", middleware.LoggerMiddleware(http.HandlerFunc(t.ListNews)))
 	mux.Handle("GET /api/v1/news/{id}", middleware.LoggerMiddleware(http.HandlerFunc(t.GetNewsById)))
-	mux.Handle("GET /api/v1/admin/news", middleware.LoggerMiddleware(http.HandlerFunc(t.GetAllNewsAdmin)))
-	mux.Handle("GET /api/v1/admin/news/{id}", middleware.LoggerMiddleware(http.HandlerFunc(t.NewsByIdAdminRole)))
-	mux.Handle("PATCH /api/v1/admin/news/{id}/status", middleware.LoggerMiddleware(http.HandlerFunc(t.NewsUpdateStatus)))
-	mux.Handle("DELETE /api/v1/admin/news/{id}", middleware.LoggerMiddleware(http.HandlerFunc(t.NewsDelete)))
-	mux.Handle("POST /api/v1/admin/news", middleware.LoggerMiddleware(http.HandlerFunc(t.CreateNews)))
+
+	adminAuth := middleware.AuthMiddleware(t.publicKey, "User_adm")
+
+	mux.Handle("GET /api/v1/admin/news", middleware.LoggerMiddleware(adminAuth(http.HandlerFunc(t.GetAllNewsAdmin))))
+	mux.Handle("GET /api/v1/admin/news/{id}", middleware.LoggerMiddleware(adminAuth(http.HandlerFunc(t.NewsByIdAdminRole))))
+	mux.Handle("PATCH /api/v1/admin/news/{id}/status", middleware.LoggerMiddleware(adminAuth(http.HandlerFunc(t.NewsUpdateStatus))))
+	mux.Handle("DELETE /api/v1/admin/news/{id}", middleware.LoggerMiddleware(adminAuth(http.HandlerFunc(t.NewsDelete))))
+	mux.Handle("POST /api/v1/admin/news", middleware.LoggerMiddleware(adminAuth(http.HandlerFunc(t.CreateNews))))
 
 	return mux
 }

@@ -1,13 +1,19 @@
 package middleware
 
 import (
+	"CA_shares/errorResponse"
+	"CA_shares/serviceErrors"
 	"bytes"
+	"crypto/rsa"
 	"encoding/json"
 	"io"
 	"log"
 	"net/http"
 	"os"
+	"strings"
 	"time"
+
+	"github.com/golang-jwt/jwt/v5"
 )
 
 type ResponseLog struct {
@@ -126,4 +132,60 @@ func writeResponse(label string, logMap map[string]interface{}) {
 	separator := "--" + label + "--\n"
 	_, _ = file.WriteString(separator)
 	_, _ = file.Write(append(jsonData, '\n'))
+}
+
+func AuthMiddleware(publicKey *rsa.PublicKey, requiredRole string) func(http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			authHeader := r.Header.Get("Authorization")
+			if authHeader == "" {
+				errorResponse.ErrorResponseJSON(w, serviceErrors.ErrUnauthorized)
+				return
+			}
+
+			parts := strings.Split(authHeader, " ")
+			if len(parts) != 2 || parts[0] != "Bearer" {
+				errorResponse.ErrorResponseJSON(w, serviceErrors.ErrUnauthorized)
+				return
+			}
+			tokenString := parts[1]
+
+			token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+				if _, ok := token.Method.(*jwt.SigningMethodRSA); !ok {
+					return nil, serviceErrors.ErrUnauthorized
+				}
+				return publicKey, nil
+			})
+
+			if err != nil || !token.Valid {
+				errorResponse.ErrorResponseJSON(w, serviceErrors.ErrUnauthorized)
+				return
+			}
+
+			claims, ok := token.Claims.(jwt.MapClaims)
+			if !ok {
+				errorResponse.ErrorResponseJSON(w, serviceErrors.ErrUnauthorized)
+				return
+			}
+
+			var hasRequired bool
+			switch v := claims["authorities"].(type) {
+			case string:
+				hasRequired = v == requiredRole || v == "ROLE_"+requiredRole
+			case []interface{}:
+				for _, item := range v {
+					if s, ok := item.(string); ok && (s == requiredRole || s == "ROLE_"+requiredRole) {
+						hasRequired = true
+						break
+					}
+				}
+			}
+
+			if !hasRequired {
+				errorResponse.ErrorResponseJSON(w, serviceErrors.ErrForbidden)
+				return
+			}
+			next.ServeHTTP(w, r)
+		})
+	}
 }

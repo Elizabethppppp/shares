@@ -20,10 +20,14 @@ type Server struct {
 	Addr string `yaml:"addr"`
 }
 
+type Auth struct {
+	PublicKey string `yaml:"public_key"`
+}
+
 type Config struct {
 	DB     DB     `yaml:"db"`
 	Server Server `yaml:"server"`
-
+	Auth   Auth   `yaml:"auth"`
 	Logger struct {
 		Level  string `yaml:"level"`
 		Format string `yaml:"format"`

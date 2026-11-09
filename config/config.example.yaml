@@ -12,3 +12,9 @@ logger:
 
 server:
   addr: ":8090"
+
+auth:
+  public_key: |
+    -----BEGIN PUBLIC KEY-----
+    MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A...
+    -----END PUBLIC KEY-----
