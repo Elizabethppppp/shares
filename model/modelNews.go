@@ -82,3 +82,12 @@ type NewsPostNew struct {
 	PreviewImg  string    `json:"previewImg"`
 	Img         string    `json:"img"`
 }
+
+type NewsEditNotification struct {
+	Id          int64     `json:"id"`
+	Title       string    `json:"title"`
+	Content     string    `json:"content"`
+	PublishedAt time.Time `json:"publishedAt"`
+	PreviewImg  string    `json:"previewImg"`
+	Img         string    `json:"img"`
+}

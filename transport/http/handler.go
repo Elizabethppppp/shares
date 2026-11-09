@@ -217,3 +217,13 @@ func (t *Transport) CreateNews(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	_ = json.NewEncoder(w).Encode(news)
 }
+
+func (t *Transport) EditNews(w http.ResponseWriter, r *http.Request) {
+	id, err := validation.ParseId(r)
+	if err != nil {
+		errorResponse.ErrorResponseJSON(w, err)
+		return
+	}
+
+
+}

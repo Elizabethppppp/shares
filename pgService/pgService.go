@@ -272,3 +272,48 @@ func (pg *PgService) Create(ctx context.Context, p model.NewsPostNew) (model.New
 	news.CreatedAt = createdAt.Format("2006-01-02 15:04:05")
 	return news, nil
 }
+
+func (pg *PgService) ToEdit(ctx context.Context, e model.NewsEditNotification) (model.NewsList, error) {
+	const query = `UPDATE news
+					SET title = $2, 
+					    content = %3, 
+					    published_at = $4,
+					    is_active = CASE
+							WHEN is_active = TRUE AND $4 > CURRENT_TIMESTAMP THEN FALSE
+							ELSE is_active
+					END,
+					    preview_img = $5, 
+						img = $6
+						updated_at=NOW()
+					WHERE id = $1
+					RETURNING id, title, is_active, published_at, created_at, updated_at,
+          			COALESCE(preview_img, '') AS preview_img,
+          			COALESCE(img, '') AS img`
+
+	var news model.NewsList
+	var pubAt time.Time
+	var createdAt time.Time
+	var updatedAt sql.NullTime
+	err := pg.db.QueryRowContext(ctx, query, e.Id, e.Title, e.Content, e.PublishedAt, e.PreviewImg, e.Img).Scan(
+		&news.Id,
+		&news.Title,
+		&news.IsActive,
+		&pubAt,
+		&createdAt,
+		&updatedAt,
+		&news.PreviewImg,
+		&news.Img)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return model.NewsList{}, serviceErrors.ErrNotFound
+		}
+		return model.NewsList{}, serviceErrors.ErrInternal
+	}
+	news.PublishedAt = pubAt.Format("2006-01-02")
+	news.CreatedAt = createdAt.Format("2006-01-02 15:04:05")
+	if updatedAt.Valid {
+		t := updatedAt.Time.Format("2006-01-02 15:04:05")
+		_ = t
+	}
+	return news, nil
+}
