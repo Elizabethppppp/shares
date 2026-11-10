@@ -116,6 +116,16 @@ var errorResponseMessage = map[error]errorResponse{
 			LangEn: "Unauthorized",
 		},
 	},
+	serviceErrors.ErrNewsUpdateFailed: {
+		StatusCode:   http.StatusBadRequest,
+		Code:         CodeBadRequest,
+		InternalCode: "",
+		DevMessage:   "",
+		UserMessage: UserMessage{
+			LangRu: "Не удалось сохранить изменения. Проверьте заполнение полей и попробуйте снова",
+			LangEn: "Couldn't save changes. Please check the fields and try again",
+		},
+	},
 }
 
 func ErrorResponseJSON(w http.ResponseWriter, errs error) {

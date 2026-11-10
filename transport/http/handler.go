@@ -188,7 +188,7 @@ func (t *Transport) CreateNews(w http.ResponseWriter, r *http.Request) {
 	}
 
 	content := r.FormValue("content")
-	if content == "" || len([]rune(content)) > 1000 {
+	if content == "" || len([]rune(content)) > 10000 {
 		errorResponse.ErrorResponseJSON(w, serviceErrors.ErrNewsValidationFailed)
 		return
 	}
@@ -218,12 +218,55 @@ func (t *Transport) CreateNews(w http.ResponseWriter, r *http.Request) {
 	_ = json.NewEncoder(w).Encode(news)
 }
 
-func (t *Transport) EditNews(w http.ResponseWriter, r *http.Request) {
+func (t *Transport) UpdateNews(w http.ResponseWriter, r *http.Request) {
 	id, err := validation.ParseId(r)
 	if err != nil {
 		errorResponse.ErrorResponseJSON(w, err)
 		return
 	}
 
+	const maxBody = 16 << 20
+	r.Body = http.MaxBytesReader(w, r.Body, maxBody)
 
+	if err := r.ParseMultipartForm(maxBody); err != nil {
+		errorResponse.ErrorResponseJSON(w, serviceErrors.ErrNewsUpdateFailed)
+		return
+	}
+
+	title := r.FormValue("title")
+	if title == "" || len([]rune(title)) > 50 {
+		errorResponse.ErrorResponseJSON(w, serviceErrors.ErrNewsUpdateFailed)
+		return
+	}
+
+	content := r.FormValue("content")
+	if content == "" || len([]rune(content)) > 10000 {
+		errorResponse.ErrorResponseJSON(w, serviceErrors.ErrNewsUpdateFailed)
+		return
+	}
+
+	pubAtStr := r.FormValue("publishedAt")
+	publishedAt, err := time.Parse("02-01-2006", pubAtStr)
+	if err != nil {
+		errorResponse.ErrorResponseJSON(w, serviceErrors.ErrNewsUpdateFailed)
+		return
+	}
+
+	input := model.NewsEditNotification{
+		Id:          id,
+		Title:       title,
+		Content:     content,
+		PublishedAt: publishedAt,
+		PreviewImg:  "",
+		Img:         "",
+	}
+
+	news, err := t.s.ToEditNotification(r.Context(), input)
+	if err != nil {
+		errorResponse.ErrorResponseJSON(w, err)
+		return
+	}
+	w.Header().Set("Content-Type", "multipart/form-data")
+	w.WriteHeader(http.StatusOK)
+	_ = json.NewEncoder(w).Encode(news)
 }

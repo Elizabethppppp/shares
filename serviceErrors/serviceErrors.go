@@ -11,4 +11,5 @@ var (
 	ErrPublicationNotReached = errors.New("publication not reached")
 	ErrNewsValidationFailed  = errors.New("news validation failed")
 	ErrUnauthorized          = errors.New("unauthorized")
+	ErrNewsUpdateFailed      = errors.New("news update failed")
 )

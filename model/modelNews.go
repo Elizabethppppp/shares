@@ -73,8 +73,6 @@ type NewsUpdateActive struct {
 	Img         string  `json:"img"`
 }
 
-type NewsUpdatePublished struct{}
-
 type NewsPostNew struct {
 	Title       string    `json:"title"`
 	Content     string    `json:"content"`

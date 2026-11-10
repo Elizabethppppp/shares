@@ -2,6 +2,7 @@ package pgService
 
 import (
 	"CA_shares/filtres"
+	"CA_shares/logger"
 	"CA_shares/model"
 	"CA_shares/serviceErrors"
 	"context"
@@ -276,14 +277,14 @@ func (pg *PgService) Create(ctx context.Context, p model.NewsPostNew) (model.New
 func (pg *PgService) ToEdit(ctx context.Context, e model.NewsEditNotification) (model.NewsList, error) {
 	const query = `UPDATE news
 					SET title = $2, 
-					    content = %3, 
+					    content = $3, 
 					    published_at = $4,
 					    is_active = CASE
-							WHEN is_active = TRUE AND $4 > CURRENT_TIMESTAMP THEN FALSE
+							WHEN is_active = TRUE AND $4 > CURRENT_DATE THEN FALSE
 							ELSE is_active
 					END,
 					    preview_img = $5, 
-						img = $6
+						img = $6,
 						updated_at=NOW()
 					WHERE id = $1
 					RETURNING id, title, is_active, published_at, created_at, updated_at,
@@ -307,6 +308,7 @@ func (pg *PgService) ToEdit(ctx context.Context, e model.NewsEditNotification) (
 		if err == sql.ErrNoRows {
 			return model.NewsList{}, serviceErrors.ErrNotFound
 		}
+		logger.Error("update news", "id", e.Id, "error", err.Error())
 		return model.NewsList{}, serviceErrors.ErrInternal
 	}
 	news.PublishedAt = pubAt.Format("2006-01-02")
