@@ -126,6 +126,16 @@ var errorResponseMessage = map[error]errorResponse{
 			LangEn: "Couldn't save changes. Please check the fields and try again",
 		},
 	},
+	serviceErrors.ErrFileTooLarge: {
+		StatusCode:   http.StatusBadRequest,
+		Code:         CodeBadRequest,
+		InternalCode: "",
+		DevMessage:   "",
+		UserMessage: UserMessage{
+			LangRu: "Слишком большой файл",
+			LangEn: "File too large",
+		},
+	},
 }
 
 func ErrorResponseJSON(w http.ResponseWriter, errs error) {

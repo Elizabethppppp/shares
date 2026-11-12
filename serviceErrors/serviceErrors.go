@@ -12,4 +12,5 @@ var (
 	ErrNewsValidationFailed  = errors.New("news validation failed")
 	ErrUnauthorized          = errors.New("unauthorized")
 	ErrNewsUpdateFailed      = errors.New("news update failed")
+	ErrFileTooLarge          = errors.New("file too large")
 )
