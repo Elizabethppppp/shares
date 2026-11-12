@@ -200,12 +200,42 @@ func (t *Transport) CreateNews(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	var previewKey, imgKey string
+
+	if file, header, err := r.FormFile("previewImg"); err == nil {
+		defer file.Close()
+		if err := validation.ValidateImgFile(header, 5<<20); err != nil {
+			errorResponse.ErrorResponseJSON(w, serviceErrors.ErrNewsValidationFailed)
+			return
+		}
+		key, err := t.storage.Save("previewImg", header.Filename, file)
+		if err != nil {
+			errorResponse.ErrorResponseJSON(w, serviceErrors.ErrInternal)
+			return
+		}
+		previewKey = key
+	}
+
+	if file, header, err := r.FormFile("img"); err == nil {
+		defer file.Close()
+		if err := validation.ValidateImgFile(header, 10<<20); err != nil {
+			errorResponse.ErrorResponseJSON(w, serviceErrors.ErrNewsValidationFailed)
+			return
+		}
+		key, err := t.storage.Save("img", header.Filename, file)
+		if err != nil {
+			errorResponse.ErrorResponseJSON(w, serviceErrors.ErrInternal)
+			return
+		}
+		imgKey = key
+	}
+
 	input := model.NewsPostNew{
 		Title:       title,
 		Content:     content,
 		PublishedAt: publishedAt,
-		PreviewImg:  "",
-		Img:         "",
+		PreviewImg:  previewKey,
+		Img:         imgKey,
 	}
 
 	news, err := t.s.CreateNotification(r.Context(), input)

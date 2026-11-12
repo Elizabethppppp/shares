@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-func validateImgFile(header *multipart.FileHeader, maxSize int64) error {
+func ValidateImgFile(header *multipart.FileHeader, maxSize int64) error {
 	if header.Size > maxSize {
 		return serviceErrors.ErrFileTooLarge
 	}
