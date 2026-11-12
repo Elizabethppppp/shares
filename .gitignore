@@ -2,3 +2,7 @@
 config/config.yaml
 bin
 *.log
+*.jpeg
+*.png
+*.jpg
+*.pdf
