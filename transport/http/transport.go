@@ -3,6 +3,7 @@ package http
 import (
 	"CA_shares/core/CA_shares"
 	"CA_shares/middleware"
+	"CA_shares/storage"
 	"crypto/rsa"
 	"net/http"
 )
@@ -10,10 +11,11 @@ import (
 type Transport struct {
 	s         *CA_shares.SharesService
 	publicKey *rsa.PublicKey
+	storage   *storage.ImageManager
 }
 
-func NewTransport(s *CA_shares.SharesService, publicKey *rsa.PublicKey) *Transport {
-	return &Transport{s: s, publicKey: publicKey}
+func NewTransport(s *CA_shares.SharesService, publicKey *rsa.PublicKey, storage *storage.ImageManager) *Transport {
+	return &Transport{s: s, publicKey: publicKey, storage: storage}
 }
 
 func (t *Transport) Handler() *http.ServeMux {

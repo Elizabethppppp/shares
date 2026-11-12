@@ -6,12 +6,14 @@ import (
 	"CA_shares/db"
 	"CA_shares/logger"
 	"CA_shares/pgService"
+	"CA_shares/storage"
 	transport "CA_shares/transport/http"
 	"context"
 	"errors"
 	"net/http"
 	"os"
 	"os/signal"
+	"path/filepath"
 	"syscall"
 	"time"
 
@@ -29,6 +31,13 @@ func main() {
 		Format: cfg.Logger.Format,
 	})
 	logger.Info("Config successfully parsed", "dbHost", cfg.DB.Host, "dbName", cfg.DB.DBName, "dbSchema", cfg.DB.Schema)
+
+	if err := os.MkdirAll(filepath.Join(cfg.Storage.UploadsDir, "preview"), 0755); err != nil {
+		logger.Fatal("create uploads dir", "error", err.Error())
+	}
+	if err := os.MkdirAll(filepath.Join(cfg.Storage.UploadsDir, "img"), 0755); err != nil {
+		logger.Fatal("create uploads dir", "error", err.Error())
+	}
 
 	publicKey, err := jwt.ParseRSAPublicKeyFromPEM([]byte(cfg.Auth.PublicKey))
 	if err != nil {
@@ -48,8 +57,9 @@ func main() {
 	logger.Info("Connection successfully established", "host", cfg.DB.Host, "port", cfg.DB.Port)
 
 	pg := pgService.NewPgService(dbConn)
+	st := storage.NewImageManager(cfg.Storage.UploadsDir)
 	svc := CA_shares.NewSharesService(pg)
-	tp := transport.NewTransport(svc, publicKey)
+	tp := transport.NewTransport(svc, publicKey, st)
 	handler := tp.Handler()
 
 	srv := &http.Server{

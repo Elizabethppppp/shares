@@ -24,11 +24,16 @@ type Auth struct {
 	PublicKey string `yaml:"public_key"`
 }
 
+type Storage struct {
+	UploadsDir string `yaml:"uploads_dir"`
+}
+
 type Config struct {
-	DB     DB     `yaml:"db"`
-	Server Server `yaml:"server"`
-	Auth   Auth   `yaml:"auth"`
-	Logger struct {
+	DB      DB      `yaml:"db"`
+	Server  Server  `yaml:"server"`
+	Auth    Auth    `yaml:"auth"`
+	Storage Storage `yaml:"storage"`
+	Logger  struct {
 		Level  string `yaml:"level"`
 		Format string `yaml:"format"`
 	} `yaml:"logger"`
