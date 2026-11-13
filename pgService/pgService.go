@@ -230,20 +230,20 @@ func (pg *PgService) UpdateActive(ctx context.Context, id int64) (model.NewsUpda
 	return news, nil
 }
 
-func (pg *PgService) Delete(ctx context.Context, id int64) error {
-	const query = `DELETE FROM news WHERE id = $1`
-	result, err := pg.db.ExecContext(ctx, query, id)
+func (pg *PgService) Delete(ctx context.Context, id int64) (string, string, error) {
+	const query = `DELETE FROM news WHERE id = $1
+					RETURNING COALESCE(preview_img, ''), COALESCE(img, '')`
+	var previewImg, img string
+
+	err := pg.db.QueryRowContext(ctx, query, id).Scan(&previewImg, &img)
+	if errors.Is(err, sql.ErrNoRows) {
+		return "", "", serviceErrors.ErrNotFound
+	}
 	if err != nil {
-		return serviceErrors.ErrInternal
+		return "", "", serviceErrors.ErrInternal
 	}
-	affected, err := result.RowsAffected()
-	if err != nil {
-		return serviceErrors.ErrInternal
-	}
-	if affected == 0 {
-		return serviceErrors.ErrNotFound
-	}
-	return nil
+
+	return previewImg, img, nil
 }
 
 func (pg *PgService) Create(ctx context.Context, p model.NewsPostNew) (model.NewsList, error) {

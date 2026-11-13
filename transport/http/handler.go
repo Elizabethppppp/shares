@@ -3,6 +3,7 @@ package http
 import (
 	"CA_shares/errorResponse"
 	"CA_shares/filtres"
+	"CA_shares/logger"
 	"CA_shares/model"
 	"CA_shares/serviceErrors"
 	"CA_shares/validation"
@@ -164,11 +165,20 @@ func (t *Transport) NewsDelete(w http.ResponseWriter, r *http.Request) {
 		errorResponse.ErrorResponseJSON(w, err)
 		return
 	}
-	err = t.s.DeleteNotification(r.Context(), id)
+	previewImg, img, err := t.s.DeleteNotification(r.Context(), id)
 	if err != nil {
 		errorResponse.ErrorResponseJSON(w, err)
 		return
 	}
+
+	if err := t.storage.Delete(previewImg); err != nil {
+		logger.Error("delete preview file", "key", previewImg, "error", err.Error())
+	}
+
+	if err := t.storage.Delete(img); err != nil {
+		logger.Error("delete img file", "key", img, "error", err.Error())
+	}
+
 	w.WriteHeader(http.StatusNoContent)
 }
 

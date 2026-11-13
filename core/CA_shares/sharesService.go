@@ -13,7 +13,7 @@ type NewsRepository interface {
 	GetAllList(ctx context.Context, f filtres.ListFilter) ([]model.NewsList, int64, error)
 	GetByIdAdminRole(ctx context.Context, id int64) (model.NewsDetailAdmin, error)
 	UpdateActive(ctx context.Context, id int64) (model.NewsUpdateActive, error)
-	Delete(ctx context.Context, id int64) error
+	Delete(ctx context.Context, id int64) (string, string, error)
 	Create(ctx context.Context, p model.NewsPostNew) (model.NewsList, error)
 	ToEdit(ctx context.Context, e model.NewsEditNotification) (model.NewsList, error)
 }
@@ -81,7 +81,7 @@ func (s *SharesService) UpdateStatus(ctx context.Context, id int64) (model.NewsU
 	return news, nil
 }
 
-func (s *SharesService) DeleteNotification(ctx context.Context, id int64) error {
+func (s *SharesService) DeleteNotification(ctx context.Context, id int64) (string, string, error) {
 	return s.repo.Delete(ctx, id)
 }
 
