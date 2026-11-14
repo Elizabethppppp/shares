@@ -15,7 +15,7 @@ type NewsRepository interface {
 	UpdateActive(ctx context.Context, id int64) (model.NewsUpdateActive, error)
 	Delete(ctx context.Context, id int64) (string, string, error)
 	Create(ctx context.Context, p model.NewsPostNew) (model.NewsList, error)
-	ToEdit(ctx context.Context, e model.NewsEditNotification) (model.NewsList, error)
+	ToEdit(ctx context.Context, e model.NewsEditNotification) (model.NewsList, string, string, error)
 }
 
 type SharesService struct {
@@ -89,6 +89,6 @@ func (s *SharesService) CreateNotification(ctx context.Context, p model.NewsPost
 	return s.repo.Create(ctx, p)
 }
 
-func (s *SharesService) ToEditNotification(ctx context.Context, e model.NewsEditNotification) (model.NewsList, error) {
+func (s *SharesService) ToEditNotification(ctx context.Context, e model.NewsEditNotification) (model.NewsList, string, string, error) {
 	return s.repo.ToEdit(ctx, e)
 }

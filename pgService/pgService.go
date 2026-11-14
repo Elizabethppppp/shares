@@ -274,7 +274,20 @@ func (pg *PgService) Create(ctx context.Context, p model.NewsPostNew) (model.New
 	return news, nil
 }
 
-func (pg *PgService) ToEdit(ctx context.Context, e model.NewsEditNotification) (model.NewsList, error) {
+func (pg *PgService) ToEdit(ctx context.Context, e model.NewsEditNotification) (model.NewsList, string, string, error) {
+
+	var oldPreviewImg, oldImg string
+	err := pg.db.QueryRowContext(ctx,
+		`SELECT COALESCE(preview_img,''), COALESCE(img,'') FROM news WHERE id = $1`, e.Id,
+	).Scan(&oldPreviewImg, &oldImg)
+	if errors.Is(err, sql.ErrNoRows) {
+		return model.NewsList{}, "", "", serviceErrors.ErrNotFound
+	}
+	if err != nil {
+		logger.Error("get old keys", "id", e.Id, "error", err.Error())
+		return model.NewsList{}, "", "", serviceErrors.ErrInternal
+	}
+
 	const query = `UPDATE news
 					SET title = $2, 
 					    content = $3, 
@@ -295,7 +308,7 @@ func (pg *PgService) ToEdit(ctx context.Context, e model.NewsEditNotification) (
 	var pubAt time.Time
 	var createdAt time.Time
 	var updatedAt sql.NullTime
-	err := pg.db.QueryRowContext(ctx, query, e.Id, e.Title, e.Content, e.PublishedAt, e.PreviewImg, e.Img).Scan(
+	err = pg.db.QueryRowContext(ctx, query, e.Id, e.Title, e.Content, e.PublishedAt, e.PreviewImg, e.Img).Scan(
 		&news.Id,
 		&news.Title,
 		&news.IsActive,
@@ -306,10 +319,10 @@ func (pg *PgService) ToEdit(ctx context.Context, e model.NewsEditNotification) (
 		&news.Img)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return model.NewsList{}, serviceErrors.ErrNotFound
+			return model.NewsList{}, "", "", serviceErrors.ErrNotFound
 		}
 		logger.Error("update news", "id", e.Id, "error", err.Error())
-		return model.NewsList{}, serviceErrors.ErrInternal
+		return model.NewsList{}, "", "", serviceErrors.ErrInternal
 	}
 	news.PublishedAt = pubAt.Format("2006-01-02")
 	news.CreatedAt = createdAt.Format("2006-01-02 15:04:05")
@@ -317,5 +330,5 @@ func (pg *PgService) ToEdit(ctx context.Context, e model.NewsEditNotification) (
 		t := updatedAt.Time.Format("2006-01-02 15:04:05")
 		_ = t
 	}
-	return news, nil
+	return news, oldPreviewImg, oldImg, nil
 }

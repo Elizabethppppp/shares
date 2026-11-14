@@ -8,6 +8,7 @@ import (
 	"CA_shares/serviceErrors"
 	"CA_shares/validation"
 	"encoding/json"
+	"errors"
 	"net/http"
 	"strconv"
 	"time"
@@ -292,20 +293,70 @@ func (t *Transport) UpdateNews(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	var newPreviewImg, newImg *string
+
+	if file, header, err := r.FormFile("previewImg"); err == nil {
+		defer file.Close()
+		if err := validation.ValidateImgFile(header, 5<<20); err != nil {
+			errorResponse.ErrorResponseJSON(w, serviceErrors.ErrNewsUpdateFailed)
+			return
+		}
+		key, err := t.storage.Save("previewImg", header.Filename, file)
+		if err != nil {
+			errorResponse.ErrorResponseJSON(w, serviceErrors.ErrInternal)
+			return
+		}
+		newPreviewImg = &key
+	} else if !errors.Is(err, http.ErrMissingFile) {
+		errorResponse.ErrorResponseJSON(w, serviceErrors.ErrNewsUpdateFailed)
+		return
+	}
+
+	if file, header, err := r.FormFile("img"); err == nil {
+		defer file.Close()
+		if err := validation.ValidateImgFile(header, 10<<20); err != nil {
+			errorResponse.ErrorResponseJSON(w, serviceErrors.ErrNewsUpdateFailed)
+			return
+		}
+		key, err := t.storage.Save("img", header.Filename, file)
+		if err != nil {
+			errorResponse.ErrorResponseJSON(w, serviceErrors.ErrInternal)
+			return
+		}
+		newImg = &key
+	} else if !errors.Is(err, http.ErrMissingFile) {
+		errorResponse.ErrorResponseJSON(w, serviceErrors.ErrNewsUpdateFailed)
+		return
+	}
+
 	input := model.NewsEditNotification{
 		Id:          id,
 		Title:       title,
 		Content:     content,
 		PublishedAt: publishedAt,
-		PreviewImg:  "",
-		Img:         "",
+		PreviewImg:  newPreviewImg,
+		Img:         newImg,
 	}
 
-	news, err := t.s.ToEditNotification(r.Context(), input)
+	news, oldPreviewImg, oldImg, err := t.s.ToEditNotification(r.Context(), input)
 	if err != nil {
+		if newPreviewImg != nil {
+			_ = t.storage.Delete(oldPreviewImg)
+		}
+		if newImg != nil {
+			_ = t.storage.Delete(oldImg)
+		}
 		errorResponse.ErrorResponseJSON(w, err)
 		return
 	}
+
+	if err := t.storage.Delete(oldPreviewImg); err != nil {
+		logger.Error("delete old preview", "key", oldPreviewImg, "error", err.Error())
+	}
+	if err := t.storage.Delete(oldImg); err != nil {
+		logger.Error("delete old img", "key", oldImg, "error", err.Error())
+	}
+
 	w.Header().Set("Content-Type", "multipart/form-data")
 	w.WriteHeader(http.StatusOK)
 	_ = json.NewEncoder(w).Encode(news)

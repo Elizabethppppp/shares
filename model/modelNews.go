@@ -86,6 +86,6 @@ type NewsEditNotification struct {
 	Title       string    `json:"title"`
 	Content     string    `json:"content"`
 	PublishedAt time.Time `json:"publishedAt"`
-	PreviewImg  string    `json:"previewImg"`
-	Img         string    `json:"img"`
+	PreviewImg  *string   `json:"previewImg"`
+	Img         *string   `json:"img"`
 }
