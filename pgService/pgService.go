@@ -318,7 +318,7 @@ func (pg *PgService) ToEdit(ctx context.Context, e model.NewsEditNotification) (
 		&news.PreviewImg,
 		&news.Img)
 	if err != nil {
-		if err == sql.ErrNoRows {
+		if errors.Is(err, sql.ErrNoRows) {
 			return model.NewsList{}, "", "", serviceErrors.ErrNotFound
 		}
 		logger.Error("update news", "id", e.Id, "error", err.Error())
