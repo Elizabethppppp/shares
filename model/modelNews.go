@@ -1,6 +1,9 @@
 package model
 
-import "time"
+import (
+	"io"
+	"time"
+)
 
 type News struct {
 	Id          int64
@@ -61,6 +64,15 @@ type NewsDetailAdmin struct {
 	Img         string  `json:"img"`
 }
 
+type ListQuery struct {
+	Offset   int
+	Limit    int
+	Title    string
+	IsActive *bool
+	SortBy   string
+	SortDir  string
+}
+
 type NewsUpdateActive struct {
 	Id          int64   `json:"id"`
 	Title       string  `json:"title"`
@@ -81,6 +93,20 @@ type NewsPostNew struct {
 	Img         string    `json:"img"`
 }
 
+type NewsCreateInput struct {
+	Title       string
+	Content     string
+	PublishedAt string
+	PreviewImg  *FileInput
+	Img         *FileInput
+}
+
+type FileInput struct {
+	Filename string
+	Size     int64
+	Reader   io.Reader
+}
+
 type NewsEditNotification struct {
 	Id          int64     `json:"id"`
 	Title       string    `json:"title"`
@@ -88,4 +114,13 @@ type NewsEditNotification struct {
 	PublishedAt time.Time `json:"publishedAt"`
 	PreviewImg  *string   `json:"previewImg"`
 	Img         *string   `json:"img"`
+}
+
+type NewsUpdateInput struct {
+	Id          int64
+	Title       string
+	Content     string
+	PublishedAt string
+	PreviewImg  *FileInput
+	Img         *FileInput
 }

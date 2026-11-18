@@ -58,7 +58,7 @@ func main() {
 
 	pg := pgService.NewPgService(dbConn)
 	st := storage.NewImageManager(cfg.Storage.UploadsDir)
-	svc := CA_shares.NewSharesService(pg)
+	svc := CA_shares.NewSharesService(pg, st)
 	tp := transport.NewTransport(svc, publicKey, st)
 	handler := tp.Handler()
 
